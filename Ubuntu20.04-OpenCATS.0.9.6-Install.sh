@@ -1,14 +1,13 @@
 #!/bin/sh
 # This script will install a new OpenCATS instance on a fresh Ubuntu 18.04 server.
 # This script is experimental and does not ensure any security.
+# This script is for ubuntu 20.04 TSL
 
 
 export DEBIAN_FRONTEND=noninteractive
 apt update
-add-apt-repository -y ppa:ondrej/php
-apt update
 apt upgrade -y
-apt install -y mariadb-server mariadb-client apache2 php7.1 php7.1-soap php7.1-ldap php7.1-mysql php7.1-gd php7.1-xml php7.1-curl php7.1-mbstring php7.1-zip php7.1-json antiword poppler-utils html2text unrtf
+apt install -y mariadb-server mariadb-client apache2 php php-cli php-fpm php-common php-soap php-ldap php-mysql php-gd php-xml php-curl php-mbstring php-zip php-json php-pear php-bcmath antiword poppler-utils html2text unrtf
 
 # Set up database
 sudo mysql -u root --execute="CREATE DATABASE cats_dev;"
@@ -17,9 +16,9 @@ sudo mysql -u root --execute="GRANT ALL PRIVILEGES ON cats_dev.* TO 'cats'@'loca
 
 # Download OpenCATS
 cd /var/www/html
-wget https://github.com/opencats/OpenCATS/archive/0.9.5-3.zip
-unzip 0.9.5-3.zip
-mv /var/www/html/OpenCATS-0.9.5-3 opencats
+https://github.com/opencats/OpenCATS/releases/download/0.9.6/opencats-0.9.6-full.zip
+unzip opencats-0.9.6-full.zip
+mv /var/www/html/opencats-0.9.6-full opencats
 
 # Install composer
 apt install -y composer
@@ -41,4 +40,3 @@ echo "MySQL was installed without a root password, It is recommended that you se
 echo ""
 
 echo "You can finish installation of your OpenCATS applicant tracking system at: http://localhost/opencats"
-php5.6 php5.6-soap php5.6-ldap php5.6-mysql php5.6-gd php5.6-xml php5.6-curl php5.6-mbstring php5.6-zip
