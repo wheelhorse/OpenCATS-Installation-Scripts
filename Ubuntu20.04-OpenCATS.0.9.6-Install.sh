@@ -7,18 +7,18 @@
 export DEBIAN_FRONTEND=noninteractive
 apt update
 apt upgrade -y
-apt install -y mariadb-server mariadb-client apache2 php php-cli php-fpm php-common php-soap php-ldap php-mysql php-gd php-xml php-curl php-mbstring php-zip php-json php-pear php-bcmath antiword poppler-utils html2text unrtf
+apt install -y mariadb-server mariadb-client apache2 php7.4 php7.4-cli php7.4-fpm php7.4-common php7.4-soap php7.4-ldap php7.4-mysql php7.4-gd php7.4-xml php7.4-curl php7.4-mbstring php7.4-zip php7.4-json antiword poppler-utils html2text unrtf
 
 # Set up database
 sudo mysql -u root --execute="CREATE DATABASE cats_dev;"
 sudo mysql -u root --execute="CREATE USER 'cats'@'localhost' IDENTIFIED BY 'password';"
 sudo mysql -u root --execute="GRANT ALL PRIVILEGES ON cats_dev.* TO 'cats'@'localhost';"
 
-# Download OpenCATS
 cd /var/www/html
-https://github.com/opencats/OpenCATS/releases/download/0.9.6/opencats-0.9.6-full.zip
-unzip opencats-0.9.6-full.zip
-mv /var/www/html/opencats-0.9.6-full opencats
+# Download OpenCATS
+wget https://github.com/wheelhorse/OpenCATS/archive/refs/heads/ysanta-096.zip
+unzip ysanta-096.zip
+mv /var/www/html/OpenCATS-ysanta-096 opencats
 
 # Install composer
 apt install -y composer
