@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  opencatsdb:
+    image: mariadb:10.5
+    container_name: opencats_mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cats_dev
+      MYSQL_USER: cats
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./db_data:/var/lib/mysql
+    restart: unless-stopped
+
+  opencats:
+    build: .
+    container_name: opencats_web
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - opencatsdb
+    volumes:
+      - ./opencats_data:/var/www/html/opencats
+    restart: unless-stopped
+
+
