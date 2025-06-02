@@ -24,7 +24,7 @@ class CandidateInfo(object):
             key_skills='',           
             date_available='',       
             current_employer='',     
-            can_relocate='',         
+            can_relocate=0,         
             current_pay='',          
             desired_pay='',          
             notes='',                
@@ -33,8 +33,8 @@ class CandidateInfo(object):
             entered_by='',           
             owner='',                
             site_id='',              
-            eeo_ethnic_type_id='',   
-            eeo_veteran_type_id='',  
+            eeo_ethnic_type_id=0,   
+            eeo_veteran_type_id=0,  
             eeo_disability_status='',
             eeo_gender='',
             ):
@@ -120,7 +120,7 @@ def sql_insert_candidate(candidate_info):
                 "{zzip}",
                 "{source}",
                 "{key_skills}",
-                "{date_available}",
+                NULL,
                 "{current_employer}",
                 "{can_relocate}",
                 "{current_pay}",
@@ -149,8 +149,7 @@ def sql_insert_candidate(candidate_info):
                     phone_work            = candidate_info.phone_work,
                     address               = candidate_info.address,
                     city                  = candidate_info.city,
-                    #state                 = candidate_info.state,
-                    state                 = 'autoL',
+                    state                 = candidate_info.state,
                     zzip                  = candidate_info.zzip,
                     source                = candidate_info.source,
                     key_skills            = candidate_info.key_skills,
@@ -162,7 +161,7 @@ def sql_insert_candidate(candidate_info):
                     notes                 = candidate_info.notes,
                     web_site              = candidate_info.web_site,
                     best_time_to_call     = candidate_info.best_time_to_call,
-                    entered_by            = candidate_info.entered_by,
+                    entered_by            = candidate_info.owner,
                     owner                 = candidate_info.owner,
                     site_id               = candidate_info.site_id,
                     eeo_ethnic_type_id    = candidate_info.eeo_ethnic_type_id,
@@ -226,7 +225,134 @@ class resume(object):
                 print('index : {}'.format(i))
                 raise(e)
 
+    def gen_chenjuan_candidate_entry(self) -> CandidateInfo:
+        size = self.df.shape[0]
+        for i in range(size):
+            if type(self.df.iloc[i]['姓名']) is float:
+                self.df.iloc[i]['姓名'] = '某某某'
+
+            try:
+                work_years = ''
+                if str(self.df.iloc[i]['相关工作经验']) != 'nan':
+                    work_years = '截止2025年2月相关工作经验:' + str(int(self.df.iloc[i]['相关工作经验'])) + '年'
+                cand = CandidateInfo(first_name=self.df.iloc[i]['姓名'][1:],
+                        last_name=self.df.iloc[i]['姓名'][0],
+                        phone_cell=str(self.df.iloc[i]['联系方式']).replace(' ', ''),
+                        key_skills=self.df.iloc[i]['应聘岗位'],
+                        current_employer=self.df.iloc[i]['现工作单位'],
+                        current_pay='',
+                        notes=self.convert_str([self.df.iloc[i]['学历'], work_years, self.df.iloc[i]['电话沟通或面试记录']]),
+                        site_id=1,
+                        owner=1267)
+                yield cand
+            except TypeError as e:
+                print(self.df.iloc[i])
+                print('index : {}'.format(i))
+                raise(e)
+
+    def gen_chenjuan_senior_leader_entry(self) -> CandidateInfo:
+        size = self.df.shape[0]
+        for i in range(size):
+            if type(self.df.iloc[i]['姓名']) is float:
+                self.df.iloc[i]['姓名'] = '某某某'
+
+            try:
+                work_years = ''
+                if str(self.df.iloc[i]['年龄']) != 'nan':
+                    age_years = '截止2025年3月\n年龄:' + str(int(self.df.iloc[i]['年龄'])) + '岁'
+                if str(self.df.iloc[i]['性别']) != 'nan':
+                    gender = '性别:' + str(self.df.iloc[i]['性别'])
+                cand = CandidateInfo(first_name=self.df.iloc[i]['姓名'][1:],
+                        last_name=self.df.iloc[i]['姓名'][0],
+                        phone_cell=str(self.df.iloc[i]['联系电话']).replace(' ', ''),
+                        key_skills=self.df.iloc[i]['岗位'],
+                        current_employer='广西双英座椅股份有限公司重庆分公司',
+                        current_pay='',
+                        notes=self.convert_str([age_years, gender, '学历:'+str(self.df.iloc[i]['最高学历']), '学校:'+str(self.df.iloc[i]['毕业学校']), '专业:'+str(self.df.iloc[i]['专业']), self.df.iloc[i]['notes']]),
+                        site_id=1,
+                        owner=1267)
+                yield cand
+            except TypeError as e:
+                print(self.df.iloc[i])
+                print('index : {}'.format(i))
+                raise(e)
     
+    def gen_chenjuan_junior_leader_entry(self) -> CandidateInfo:
+        size = self.df.shape[0]
+        for i in range(size):
+            if type(self.df.iloc[i]['姓名']) is float:
+                self.df.iloc[i]['姓名'] = '某某某'
+
+            try:
+                work_years = ''
+                if str(self.df.iloc[i]['年龄']) != 'nan':
+                    age_years = '截止2025年3月\n年龄:' + str(int(self.df.iloc[i]['年龄'])) + '岁'
+                cand = CandidateInfo(first_name=self.df.iloc[i]['姓名'][1:],
+                        last_name=self.df.iloc[i]['姓名'][0],
+                        phone_cell=str(self.df.iloc[i]['联系电话']).replace(' ', ''),
+                        key_skills=self.df.iloc[i]['岗位'],
+                        current_employer='广西双英座椅股份有限公司重庆分公司',
+                        current_pay='',
+                        notes=self.convert_str([
+                            age_years,
+                            '姓名：' + (str(self.df.iloc[i]['姓名']) if pd.notna(self.df.iloc[i]['姓名']) else ''),
+                            '部门：' + (str(self.df.iloc[i]['部门']) if pd.notna(self.df.iloc[i]['部门']) else 'XXX'),
+                            '岗位：' + (str(self.df.iloc[i]['岗位']) if pd.notna(self.df.iloc[i]['岗位']) else 'XXX'),
+                            '入职时间：' + (str(self.df.iloc[i]['入职时间']) if pd.notna(self.df.iloc[i]['入职时间']) else 'XXX'),
+                            '联系电话：' + (str(self.df.iloc[i]['联系电话']) if pd.notna(self.df.iloc[i]['联系电话']) else 'XXX'),
+                            '最高学历：' + (str(self.df.iloc[i]['最高学历']) if pd.notna(self.df.iloc[i]['最高学历']) else 'XXX'),
+                            '学历来源：' + (str(self.df.iloc[i]['学历来源']) if pd.notna(self.df.iloc[i]['学历来源']) else 'XXX'),
+                            '毕业学校：' + (str(self.df.iloc[i]['毕业学校']) if pd.notna(self.df.iloc[i]['毕业学校']) else 'XXX'),
+                            '专业：' + (str(self.df.iloc[i]['专业']) if pd.notna(self.df.iloc[i]['专业']) else 'XXX'),
+                            '职级评定：' + (str(self.df.iloc[i]['职级评定']) if pd.notna(self.df.iloc[i]['职级评定']) else 'XXX'),
+                            '备注：' + (str(self.df.iloc[i]['备注']) if pd.notna(self.df.iloc[i]['备注']) else '')]
+                            ),
+                        site_id=1,
+                        owner=1267)
+                yield cand
+            except TypeError as e:
+                print(self.df.iloc[i])
+                print('index : {}'.format(i))
+                raise(e)
+
+    def gen_chenjuan_guanpei_entry(self) -> CandidateInfo:
+        size = self.df.shape[0]
+        for i in range(size):
+            if type(self.df.iloc[i]['姓名']) is float:
+                self.df.iloc[i]['姓名'] = '某某某'
+
+            try:
+                work_years = ''
+                if str(self.df.iloc[i]['年龄']) != 'nan':
+                    age_years = '截止2025年4月\n年龄:' + str(int(self.df.iloc[i]['年龄'])) + '岁'
+                cand = CandidateInfo(first_name=self.df.iloc[i]['姓名'][1:],
+                        last_name=self.df.iloc[i]['姓名'][0],
+                        phone_cell=str(self.df.iloc[i]['联系电话']).replace(' ', ''),
+                        key_skills=self.df.iloc[i]['岗位'],
+                        current_employer='广西双英座椅股份有限公司重庆分公司',
+                        state='autoCJ',
+                        current_pay='',
+                        notes=self.convert_str([
+                            age_years,
+                            '姓名：' + (str(self.df.iloc[i]['姓名']) if pd.notna(self.df.iloc[i]['姓名']) else ''),
+                            '部门：' + (str(self.df.iloc[i]['部门']) if pd.notna(self.df.iloc[i]['部门']) else 'XXX'),
+                            '岗位：' + (str(self.df.iloc[i]['岗位']) if pd.notna(self.df.iloc[i]['岗位']) else 'XXX'),
+                            '入职时间：' + (str(self.df.iloc[i]['入职时间']) if pd.notna(self.df.iloc[i]['入职时间']) else 'XXX'),
+                            '联系电话：' + (str(self.df.iloc[i]['联系电话']) if pd.notna(self.df.iloc[i]['联系电话']) else 'XXX'),
+                            '最高学历：' + (str(self.df.iloc[i]['最高学历']) if pd.notna(self.df.iloc[i]['最高学历']) else 'XXX'),
+                            '学历来源：' + (str(self.df.iloc[i]['学历来源']) if pd.notna(self.df.iloc[i]['学历来源']) else 'XXX'),
+                            '毕业学校：' + (str(self.df.iloc[i]['毕业学校']) if pd.notna(self.df.iloc[i]['毕业学校']) else 'XXX'),
+                            '毕业时间：' + (str(self.df.iloc[i]['毕业时间']) if pd.notna(self.df.iloc[i]['毕业时间']) else 'XXX'),
+                            '专业：' + (str(self.df.iloc[i]['专业']) if pd.notna(self.df.iloc[i]['专业']) else 'XXX')
+                            ]
+                            ),
+                        site_id=1,
+                        owner=1267)
+                yield cand
+            except TypeError as e:
+                print(self.df.iloc[i])
+                print('index : {}'.format(i))
+                raise(e)
 
 class AttachmentInfo(object):
     def __init__(self, 
@@ -385,19 +511,25 @@ if __name__ == '__main__':
     ## 关闭Session:
     #session.close()
     #resumedb = resume('qe.csv')
-#    resumedb = resume('sales.csv')
-    #resumedb.load_csv()
+    #resumedb = resume('contact.csv')
+    #resumedb = resume('senior_leader.csv')
+    #resumedb = resume('junior.csv')
+    resumedb = resume('shuangying_guanpei.csv')
+    resumedb.load_csv()
 
     session = DBSession()
-    #for cand in resumedb.gen_candidate_entry():
-    #    if check_duplicate(cand.phone_cell):
-    #        print("alreay existing")
-    #        continue
+    #for cand in resumedb.gen_chenjuan_candidate_entry():
+    #for cand in resumedb.gen_chenjuan_junior_leader_entry():
+    for cand in resumedb.gen_chenjuan_guanpei_entry():
+        if check_duplicate(cand.phone_cell):
+            print("{} {} alreay existing".format(cand.last_name+cand.first_name, cand.phone_cell))
+            continue
 
-    #    result = session.execute(
-    #            sql_insert_candidate(cand) 
-    #            )
-    #    print("Inserted {}".format(cand.last_name+cand.first_name))
+        result = session.execute(
+                sql_insert_candidate(cand) 
+                )
+        print("Inserted {}".format(cand.last_name+cand.first_name))
+        #print("Note: {}".format(cand.notes))
     print("hahahaha!")
     session.close()
 
