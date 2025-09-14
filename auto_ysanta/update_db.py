@@ -322,32 +322,21 @@ class resume(object):
                 self.df.iloc[i]['姓名'] = '某某某'
 
             try:
-                work_years = ''
-                if str(self.df.iloc[i]['年龄']) != 'nan':
-                    age_years = '截止2025年4月\n年龄:' + str(int(self.df.iloc[i]['年龄'])) + '岁'
                 cand = CandidateInfo(first_name=self.df.iloc[i]['姓名'][1:],
                         last_name=self.df.iloc[i]['姓名'][0],
                         phone_cell=str(self.df.iloc[i]['联系电话']).replace(' ', ''),
                         key_skills=self.df.iloc[i]['岗位'],
-                        current_employer='广西双英座椅股份有限公司重庆分公司',
-                        state='autoCJ',
+                        current_employer='江苏日盈电子',
+                        state='autoJiaJun',
                         current_pay='',
                         notes=self.convert_str([
-                            age_years,
                             '姓名：' + (str(self.df.iloc[i]['姓名']) if pd.notna(self.df.iloc[i]['姓名']) else ''),
-                            '部门：' + (str(self.df.iloc[i]['部门']) if pd.notna(self.df.iloc[i]['部门']) else 'XXX'),
                             '岗位：' + (str(self.df.iloc[i]['岗位']) if pd.notna(self.df.iloc[i]['岗位']) else 'XXX'),
-                            '入职时间：' + (str(self.df.iloc[i]['入职时间']) if pd.notna(self.df.iloc[i]['入职时间']) else 'XXX'),
-                            '联系电话：' + (str(self.df.iloc[i]['联系电话']) if pd.notna(self.df.iloc[i]['联系电话']) else 'XXX'),
-                            '最高学历：' + (str(self.df.iloc[i]['最高学历']) if pd.notna(self.df.iloc[i]['最高学历']) else 'XXX'),
-                            '学历来源：' + (str(self.df.iloc[i]['学历来源']) if pd.notna(self.df.iloc[i]['学历来源']) else 'XXX'),
-                            '毕业学校：' + (str(self.df.iloc[i]['毕业学校']) if pd.notna(self.df.iloc[i]['毕业学校']) else 'XXX'),
-                            '毕业时间：' + (str(self.df.iloc[i]['毕业时间']) if pd.notna(self.df.iloc[i]['毕业时间']) else 'XXX'),
-                            '专业：' + (str(self.df.iloc[i]['专业']) if pd.notna(self.df.iloc[i]['专业']) else 'XXX')
+                            '联系电话：' + (str(self.df.iloc[i]['联系电话']) if pd.notna(self.df.iloc[i]['联系电话']) else 'XXX')
                             ]
                             ),
                         site_id=1,
-                        owner=1267)
+                        owner=1261)
                 yield cand
             except TypeError as e:
                 print(self.df.iloc[i])
@@ -514,7 +503,8 @@ if __name__ == '__main__':
     #resumedb = resume('contact.csv')
     #resumedb = resume('senior_leader.csv')
     #resumedb = resume('junior.csv')
-    resumedb = resume('shuangying_guanpei.csv')
+    #resumedb = resume('shuangying_guanpei.csv')
+    resumedb = resume('jiangsuriying.csv')
     resumedb.load_csv()
 
     session = DBSession()
